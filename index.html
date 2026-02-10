@@ -21,7 +21,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
             transition: background 1s ease;
-            touch-action: manipulation; /* Убирает лишние задержки на тачскринах */
+            touch-action: manipulation;
         }
 
         .container {
@@ -30,6 +30,9 @@
             z-index: 10;
             padding: 20px;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         @keyframes fadeIn {
@@ -38,10 +41,11 @@
         }
 
         .gif-container img {
-            max-width: 220px; /* Чуть меньше для мобилок */
-            width: 70%;
+            max-width: 250px;
+            width: 80%;
             border-radius: 20px;
             animation: float 3s ease-in-out infinite;
+            margin-bottom: 10px;
         }
 
         @keyframes float {
@@ -52,44 +56,46 @@
         h1 {
             color: #c9184a;
             font-size: 1.8rem;
-            margin: 20px 0;
+            margin: 15px 0 25px 0;
             padding: 0 10px;
         }
 
         .buttons {
             display: flex;
-            justify-content: center;
+            flex-direction: column; /* Кнопки в столбик */
             align-items: center;
-            gap: 20px;
-            height: 100px;
+            gap: 15px;
+            width: 100%;
+            height: 120px; /* Фиксируем высоту, чтобы не дергалось */
             position: relative;
         }
 
         button {
-            padding: 15px 35px;
-            font-size: 1.1rem;
+            padding: 15px 0;
+            width: 200px; /* Одинаковая ширина */
+            font-size: 1.2rem;
             font-weight: bold;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            -webkit-tap-highlight-color: transparent; /* Убирает синюю рамку при нажатии на iOS */
+            transition: transform 0.2s ease, opacity 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
         #yesBtn {
             background-color: var(--primary-color);
             color: white;
             box-shadow: 0 8px 15px rgba(255, 77, 109, 0.4);
-            z-index: 20;
+            position: relative;
+            z-index: 5;
         }
 
         #noBtn {
             background-color: #adb5bd;
             color: white;
-            position: absolute; 
-            z-index: 21;
-            /* Плавное перемещение */
-            transition: left 0.2s ease, top 0.2s ease;
+            position: relative; /* В начале стоит на месте */
+            z-index: 10;
+            transition: left 0.2s ease, top 0.2s ease; /* Плавный полет */
         }
 
         #successScreen {
@@ -97,7 +103,7 @@
         }
 
         .success-msg {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             color: #ff4d6d;
             line-height: 1.4;
             padding: 20px;
@@ -139,75 +145,65 @@
         <div class="success-msg">
             Урааа! 😍 <br>
             Я знал(а), что ты согласишься! <br>
-            <span style="font-size: 1rem; color: #555;">Встретимся очень скоро! ✨</span>
+            <span style="font-size: 1.1rem; color: #555;">Встретимся в 19:00! ✨</span>
         </div>
     </div>
 
     <script>
-    const noBtn = document.getElementById('noBtn');
-    const mainScreen = document.getElementById('mainScreen');
-    const successScreen = document.getElementById('successScreen');
+        const noBtn = document.getElementById('noBtn');
+        const mainScreen = document.getElementById('mainScreen');
+        const successScreen = document.getElementById('successScreen');
 
-    // Функция перемещения кнопки
-    function moveButton(e) {
-        // Предотвращаем стандартное поведение (чтобы кнопка не нажималась)
-        if (e) e.preventDefault();
+        function moveButton(e) {
+            if (e) e.preventDefault();
 
-        // Рассчитываем доступную ширину и высоту экрана
-        // Вычитаем размеры кнопки, чтобы она не уходила за край
-        const maxX = window.innerWidth - noBtn.offsetWidth - 20;
-        const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+            // При первом же взаимодействии делаем кнопку фиксированной
+            noBtn.style.position = 'fixed';
 
-        // Генерируем случайные координаты
-        const randomX = Math.floor(Math.random() * maxX);
-        const randomY = Math.floor(Math.random() * maxY);
+            // Вычисляем границы так, чтобы кнопка не вылетала за экран
+            const padding = 20;
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
 
-        // Применяем новые координаты
-        noBtn.style.position = 'fixed';
-        noBtn.style.left = randomX + 'px';
-        noBtn.style.top = randomY + 'px';
-        noBtn.style.zIndex = '999';
-    }
+            const randomX = Math.floor(Math.random() * (maxX - padding) + padding);
+            const randomY = Math.floor(Math.random() * (maxY - padding) + padding);
 
-    // Слушатель для мышки (компьютер)
-    noBtn.addEventListener('mouseover', moveButton);
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
 
-    // Слушатель для сенсорных экранов (телефон)
-    // Используем touchstart, чтобы кнопка убегала ДО того, как палец нажмет на неё
-    noBtn.addEventListener('touchstart', function(e) {
-        moveButton(e);
-    });
+        // События для ПК и Телефонов
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', moveButton);
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            moveButton(e);
+        });
 
-    // На всякий случай, если кнопка всё же "нажалась"
-    noBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        moveButton(e);
-    });
+        function showSuccess() {
+            mainScreen.style.opacity = '0';
+            setTimeout(() => {
+                mainScreen.style.display = 'none';
+                successScreen.style.display = 'flex';
+                successScreen.style.opacity = '1';
+                document.body.style.backgroundColor = '#ffffff';
+                startHearts();
+            }, 500);
+        }
 
-    function showSuccess() {
-        mainScreen.style.opacity = '0';
-        setTimeout(() => {
-            mainScreen.style.display = 'none';
-            successScreen.style.display = 'block';
-            successScreen.style.opacity = '1';
-            document.body.style.backgroundColor = '#fff';
-            startHearts();
-        }, 500);
-    }
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
+        }
 
-    function createHeart() {
-        const heart = document.createElement('div');
-        heart.classList.add('heart');
-        heart.innerHTML = '❤️';
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 5000);
-    }
-
-    function startHearts() {
-        setInterval(createHeart, 300);
-    }
-</script>
+        function startHearts() {
+            setInterval(createHeart, 300);
+        }
+    </script>
 </body>
 </html>
