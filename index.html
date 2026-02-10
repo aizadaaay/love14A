@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Для тебя ❤️</title>
     <style>
         :root {
@@ -18,17 +18,18 @@
             align-items: center;
             height: 100vh;
             background-color: var(--bg-color);
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
             transition: background 1s ease;
+            touch-action: manipulation; /* Убирает лишние задержки на тачскринах */
         }
 
-        /* Контейнер с плавной анимацией появления */
         .container {
             text-align: center;
             animation: fadeIn 1.5s ease;
             z-index: 10;
             padding: 20px;
+            width: 100%;
         }
 
         @keyframes fadeIn {
@@ -37,9 +38,9 @@
         }
 
         .gif-container img {
-            max-width: 280px;
+            max-width: 220px; /* Чуть меньше для мобилок */
+            width: 70%;
             border-radius: 20px;
-            /* Эффект парения */
             animation: float 3s ease-in-out infinite;
         }
 
@@ -50,65 +51,62 @@
 
         h1 {
             color: #c9184a;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             margin: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+            padding: 0 10px;
         }
 
         .buttons {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 25px;
-            height: 80px;
+            gap: 20px;
+            height: 100px;
+            position: relative;
         }
 
         button {
-            padding: 15px 40px;
-            font-size: 1.3rem;
+            padding: 15px 35px;
+            font-size: 1.1rem;
             font-weight: bold;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            outline: none;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent; /* Убирает синюю рамку при нажатии на iOS */
         }
 
         #yesBtn {
             background-color: var(--primary-color);
             color: white;
-            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.4);
-        }
-
-        #yesBtn:hover {
-            transform: scale(1.1);
-            background-color: #ff758f;
+            box-shadow: 0 8px 15px rgba(255, 77, 109, 0.4);
+            z-index: 20;
         }
 
         #noBtn {
             background-color: #adb5bd;
             color: white;
-            position: absolute; /* Важно для свободного полета */
-            transition: all 0.2s ease;
+            position: absolute; 
+            z-index: 21;
+            /* Плавное перемещение */
+            transition: left 0.2s ease, top 0.2s ease;
         }
 
-        /* Экран успеха */
         #successScreen {
             display: none;
         }
 
         .success-msg {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             color: #ff4d6d;
-            line-height: 1.5;
+            line-height: 1.4;
+            padding: 20px;
         }
 
-        /* Стили для сердечек */
         .heart {
             position: fixed;
             font-size: 20px;
             color: var(--primary-color);
-            user-select: none;
             pointer-events: none;
             animation: moveHearts 4s linear forwards;
             z-index: 1;
@@ -124,13 +122,13 @@
 
     <div class="container" id="mainScreen">
         <div class="gif-container">
-            <img id="mainGif" src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExenIyYjBvMzk4Ynp2MGpyMnQwemwyMzB4M3kxYXZvd3RzM28yYnNlaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0OgdJVNjbcIifqSb7U/giphy.gif" alt="Cat">
+            <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExenIyYjBvMzk4Ynp2MGpyMnQwemwyMzB4M3kxYXZvd3RzM28yYnNlaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0OgdJVNjbcIifqSb7U/giphy.gif" alt="Cat">
         </div>
         <h1>Пойдешь со мной на свидание? ❤️</h1>
         
-        <div class="buttons" id="btnWrapper">
+        <div class="buttons">
             <button id="yesBtn" onclick="showSuccess()">ДА!</button>
-            <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">Нет</button>
+            <button id="noBtn">Нет</button>
         </div>
     </div>
 
@@ -141,54 +139,75 @@
         <div class="success-msg">
             Урааа! 😍 <br>
             Я знал(а), что ты согласишься! <br>
-            <span style="font-size: 1.2rem; color: #555;">Жди сообщения с деталями... ✨</span>
+            <span style="font-size: 1rem; color: #555;">Встретимся очень скоро! ✨</span>
         </div>
     </div>
 
     <script>
-        const noBtn = document.getElementById('noBtn');
-        const mainScreen = document.getElementById('mainScreen');
-        const successScreen = document.getElementById('successScreen');
+    const noBtn = document.getElementById('noBtn');
+    const mainScreen = document.getElementById('mainScreen');
+    const successScreen = document.getElementById('successScreen');
 
-        // Плавный побег кнопки
-        function moveButton() {
-            // Рассчитываем случайные координаты внутри окна, с небольшим отступом
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 20);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 20);
-            
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
-        }
+    // Функция перемещения кнопки
+    function moveButton(e) {
+        // Предотвращаем стандартное поведение (чтобы кнопка не нажималась)
+        if (e) e.preventDefault();
 
-        // Функция при нажатии "Да"
-        function showSuccess() {
-            mainScreen.style.opacity = '0';
-            setTimeout(() => {
-                mainScreen.style.display = 'none';
-                successScreen.style.display = 'block';
-                successScreen.style.opacity = '1';
-                document.body.style.backgroundColor = '#fff'; // Меняем фон на более чистый
-                startHearts(); // Запускаем дождь из сердец
-            }, 500);
-        }
+        // Рассчитываем доступную ширину и высоту экрана
+        // Вычитаем размеры кнопки, чтобы она не уходила за край
+        const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+        const maxY = window.innerHeight - noBtn.offsetHeight - 20;
 
-        // Создание летающих сердечек
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-            document.body.appendChild(heart);
+        // Генерируем случайные координаты
+        const randomX = Math.floor(Math.random() * maxX);
+        const randomY = Math.floor(Math.random() * maxY);
 
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
-        }
+        // Применяем новые координаты
+        noBtn.style.position = 'fixed';
+        noBtn.style.left = randomX + 'px';
+        noBtn.style.top = randomY + 'px';
+        noBtn.style.zIndex = '999';
+    }
 
-        function startHearts() {
-            setInterval(createHeart, 300);
-        }
-    </script>
+    // Слушатель для мышки (компьютер)
+    noBtn.addEventListener('mouseover', moveButton);
+
+    // Слушатель для сенсорных экранов (телефон)
+    // Используем touchstart, чтобы кнопка убегала ДО того, как палец нажмет на неё
+    noBtn.addEventListener('touchstart', function(e) {
+        moveButton(e);
+    });
+
+    // На всякий случай, если кнопка всё же "нажалась"
+    noBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        moveButton(e);
+    });
+
+    function showSuccess() {
+        mainScreen.style.opacity = '0';
+        setTimeout(() => {
+            mainScreen.style.display = 'none';
+            successScreen.style.display = 'block';
+            successScreen.style.opacity = '1';
+            document.body.style.backgroundColor = '#fff';
+            startHearts();
+        }, 500);
+    }
+
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.innerHTML = '❤️';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
+    }
+
+    function startHearts() {
+        setInterval(createHeart, 300);
+    }
+</script>
 </body>
 </html>
