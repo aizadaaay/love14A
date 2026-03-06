@@ -11,7 +11,7 @@
             --slide-duration: 3s; 
         }
 
-        /* Мәтін мен элементтер көк болып ерекшеленбеуі үшін (Синий прозрачный болмас үшін) */
+        /* Текст пен элементтер көк болып ерекшеленбеуі үшін */
         * {
             -webkit-tap-highlight-color: transparent;
             user-select: none;
@@ -34,7 +34,8 @@
 
         .container {
             text-align: center;
-            animation: fadeIn 1.5s ease;
+            /* Бірдей анимация екі экранға да қолданылады */
+            animation: fadeIn 1.2s ease forwards;
             z-index: 10;
             padding: 20px;
             width: 100%;
@@ -112,11 +113,9 @@
         }
 
         #successScreen {
-            display: none;
+            display: none; /* Әдепкі бойынша жасырулы */
             flex-direction: column;
             align-items: center;
-            opacity: 0;
-            transition: opacity 0.5s ease;
         }
 
         .invite-card {
@@ -131,7 +130,6 @@
             box-sizing: border-box;
         }
 
-        /* Карта батырмасы */
         .btn-2gis {
             display: block;
             margin-top: 15px;
@@ -204,8 +202,10 @@
     <script>
         const noBtn = document.getElementById('noBtn');
         const bgMusic = document.getElementById('bgMusic');
+        const successScreen = document.getElementById('successScreen');
+        const mainScreen = document.getElementById('mainScreen');
 
-        // Қашатын батырма (Убегающая кнопка)
+        // Қашатын батырма логикасы
         function moveButton() {
             const padding = 50;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
@@ -217,21 +217,19 @@
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
-        // Музыканы басқару (Управление музыкой)
+        // МУЗЫКАНЫ БАСҚАРУ ФУНКЦИЯЛАРЫ
         function stopMusic() {
             bgMusic.pause();
         }
 
         function playMusic() {
-            // Музыка должна играть только если открыт successScreen
-            if (document.getElementById('successScreen').style.display === 'flex') {
-                bgMusic.play().catch(() => {
-                    console.log("Автоплей заблокирован браузером");
-                });
+            // Музыка тек екінші экран ашық болса ғана ойнайды
+            if (successScreen.style.display === 'flex') {
+                bgMusic.play().catch(() => console.log("Браузер музыканы бұғаттады"));
             }
         }
 
-        // 1. При сворачивании браузера или переключении вкладок
+        // Вкладка ауысқанда немесе браузерді жапқанда музыканы өшіру
         document.addEventListener("visibilitychange", () => {
             if (document.hidden) {
                 stopMusic();
@@ -240,29 +238,27 @@
             }
         });
 
-        // 2. При уходе со страницы (закрытие вкладки или переход по ссылке)
+        // Беттен шығып кеткенде (Картаға өткенде де жұмыс істейді)
         window.addEventListener("pagehide", stopMusic);
-
-        // 3. При потере фокуса окна (например, открытие шторки уведомлений или другого окна поверх)
         window.addEventListener("blur", stopMusic);
         window.addEventListener("focus", playMusic);
 
-        // Успешный экран
+        // Сәттілік экранын көрсету
         function showSuccess() {
-            bgMusic.play().catch(() => {});
-            document.getElementById('mainScreen').style.display = 'none';
-            const ss = document.getElementById('successScreen');
-            ss.style.display = 'flex';
-            setTimeout(() => ss.style.opacity = '1', 50);
+            mainScreen.style.display = 'none'; // Бірінші экранды өшіру
+            successScreen.style.display = 'flex'; // Екіншіні қосу
             
-            setInterval(createHeart, 300);
-            startSlides();
+            playMusic(); // Музыканы қосу
+            setInterval(createHeart, 300); // Жүрекшелерді жіберу
+            startSlides(); // Слайдшоуды бастау
         }
 
-        // Слайдер фотографий
+        // Слайдшоу логикасы
         function startSlides() {
             let index = 0;
             const images = document.querySelectorAll('.slideshow-container img');
+            if(images.length === 0) return;
+            
             setInterval(() => {
                 images[index].classList.remove('active');
                 index = (index + 1) % images.length;
@@ -270,7 +266,7 @@
             }, 3000);
         }
 
-        // Анимация сердечек
+        // Жүрекшелер анимациясы
         function createHeart() {
             const h = document.createElement('div');
             h.className = 'heart';
@@ -283,4 +279,3 @@
     </script>
 </body>
 </html>
-
