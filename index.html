@@ -11,6 +11,13 @@
             --slide-duration: 3s; 
         }
 
+        /* Мәтін мен элементтер көк болып ерекшеленбеуі үшін (Синий прозрачный болмас үшін) */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -23,7 +30,6 @@
             overflow-x: hidden;
             overflow-y: auto;
             transition: background 1s ease;
-            touch-action: manipulation;
         }
 
         .container {
@@ -53,19 +59,7 @@
             margin-bottom: 20px;
             overflow: hidden;
             background: #fff;
-        }
-
-        .gif-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .slideshow-container {
             position: relative;
-            width: 100%;
-            height: 100%;
         }
 
         .slideshow-container img {
@@ -83,16 +77,9 @@
             transform: scale(1);
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-
         h1 {
             color: #c9184a;
             font-size: 1.6rem;
-            margin: 10px 0 25px 0;
-            padding: 0 10px;
             line-height: 1.3;
         }
 
@@ -114,25 +101,22 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        #yesBtn {
+            transition: 0.3s;
             background-color: var(--primary-color);
             color: white;
-            z-index: 5;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         #noBtn {
             background-color: #adb5bd;
-            color: white;
-            z-index: 10;
         }
 
         #successScreen {
             display: none;
+            flex-direction: column;
+            align-items: center;
             opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
         .invite-card {
@@ -147,30 +131,24 @@
             box-sizing: border-box;
         }
 
-        .invite-card p {
-            margin: 8px 0;
-            font-size: 1rem;
-            color: #444;
-        }
-
+        /* Карта батырмасы */
         .btn-2gis {
-            display: inline-block;
-            margin-top: 10px;
+            display: block;
+            margin-top: 15px;
             background: #2ab44a;
-            color: white;
+            color: white !important;
             text-decoration: none;
-            padding: 8px 15px;
+            padding: 12px;
             border-radius: 12px;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: bold;
+            text-align: center;
+            transition: 0.3s;
         }
 
-        .kazakh-text {
-            color: #c9184a;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-top: 20px;
-            line-height: 1.4;
+        .btn-2gis:active {
+            transform: scale(0.95);
+            background: #23943d;
         }
 
         .heart {
@@ -194,11 +172,10 @@
     </audio>
 
     <div class="container" id="mainScreen">
-        <div class="media-box gif-container">
-            <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExenIyYjBvMzk4Ynp2MGpyMnQwemwyMzB4M3kxYXZvd3RzM28yYnNlaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0OgdJVNjbcIifqSb7U/giphy.gif" alt="Cat">
+        <div class="media-box">
+            <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExenIyYjBvMzk4Ynp2MGpyMnQwemwyMzB4M3kxYXZvd3RzM28yYnNlaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0OgdJVNjbcIifqSb7U/giphy.gif" style="width:100%; height:100%; object-fit:cover;">
         </div>
         <h1>Мерекелік кешкі асқа бізбен бірге баруға қалай қарайсыздар? 🌷</h1>
-        
         <div class="buttons">
             <button id="yesBtn" onclick="showSuccess()">Әрине, барамыз! ❤️</button>
             <button id="noBtn">Жоқ</button>
@@ -207,92 +184,79 @@
 
     <div class="container" id="successScreen">
         <div class="media-box">
-            <div class="slideshow-container">
-                <img src="5e71eb83-b545-4674-af8d-e1a9a39d0d2b.jpeg" alt="Топ 1" class="active">
-                <img src="b5b2e6d7-ddbe-421f-9d27-b5fc0229da54.jpeg" alt="Топ 2">
-                <img src="c64bebbd-3c35-4284-8789-69513c1db768.jpeg" alt="Топ 3">
-                <img src="4a415bdc-4f30-4b49-8dfd-416e88da3a69.jpeg" alt="Топ 4">
+            <div class="slideshow-container" id="slideshow">
+                <img src="5e71eb83-b545-4674-af8d-e1a9a39d0d2b.jpeg" class="active">
+                <img src="b5b2e6d7-ddbe-421f-9d27-b5fc0229da54.jpeg">
+                <img src="c64bebbd-3c35-4284-8789-69513c1db768.jpeg">
+                <img src="4a415bdc-4f30-4b49-8dfd-416e88da3a69.jpeg">
             </div>
         </div>
 
-        <div class="success-msg">
-            <h2 style="color: #ff4d6d; margin: 0; font-size: 1.7rem;">Керемет! 😍</h2>
-            <p style="margin: 10px 0;">Сіздердің келісімдеріңіз — біз үшін ең үлкен сыйлық! Кездесуді асыға күтеміз:</p>
-            
-            <div class="invite-card">
-                <p>📍 <b>Мекенжай:</b> Жамақаев көшесі, 144</p>
-                <p style="font-size: 0.85rem; color: #777; margin-top: -5px; margin-bottom: 10px;">(Tau Uzbechka мейрамханасы)</p>
-                <p>📅 <b>Күні:</b> 9 наурыз</p>
-                <p>🕘 <b>Уақыты:</b> 18:00</p>
-                <a href="https://2gis.kz/almaty/geo/70000001095720040" target="_blank" class="btn-2gis">📍 2GIS-те ашу</a>
-            </div>
-
-            <div class="kazakh-text">
-                22-02 тобының жігіттерінен сіздерге <br> шын жүректен! 🌹
-            </div>
+        <div class="invite-card">
+            <h2 style="color: #ff4d6d; margin: 0; font-size: 1.5rem;">Керемет! 😍</h2>
+            <p>📍 <b>Мекенжай:</b> Жамақаев көшесі, 144</p>
+            <p>📅 <b>Күні:</b> 9 наурыз, 18:00</p>
+            <a href="https://2gis.kz/almaty/geo/70000001095720040" target="_blank" class="btn-2gis">🗺️ 2GIS Картаны ашу</a>
         </div>
+        <p style="color: #c9184a; font-weight: bold;">22-02 жігіттерінен! 🌹</p>
     </div>
 
     <script>
         const noBtn = document.getElementById('noBtn');
-        const mainScreen = document.getElementById('mainScreen');
-        const successScreen = document.getElementById('successScreen');
         const bgMusic = document.getElementById('bgMusic');
 
-        // Қашатын батырма логикасы
-        function moveButton(e) {
-            if (e) e.preventDefault();
-            noBtn.style.position = 'fixed';
-            const padding = 25;
+        // Қашатын батырма
+        function moveButton() {
+            const padding = 50;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
-            const randomX = Math.floor(Math.random() * (maxX - padding) + padding);
-            const randomY = Math.floor(Math.random() * (maxY - padding) + padding);
-            noBtn.style.left = randomX + 'px';
-            noBtn.style.top = randomY + 'px';
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = Math.random() * maxX + 'px';
+            noBtn.style.top = Math.random() * maxY + 'px';
         }
-
         noBtn.addEventListener('mouseover', moveButton);
-        noBtn.addEventListener('touchstart', moveButton);
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
-        // Слайд-шоу логикасы
-        let slideIndex = 0;
-        function showSlides() {
-            const slides = document.querySelectorAll('.slideshow-container img');
-            if (slides.length < 2) return;
-            slides[slideIndex].classList.remove('active');
-            slideIndex = (slideIndex + 1) % slides.length;
-            slides[slideIndex].classList.add('active');
-        }
+        // Музыканы бақылау (Сайттан шыққанда өшу)
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                bgMusic.pause();
+            } else {
+                if (document.getElementById('successScreen').style.display === 'flex') {
+                    bgMusic.play();
+                }
+            }
+        });
 
-        // "ИӘ" батырмасын басқанда
         function showSuccess() {
-            // Музыканы қосу
-            bgMusic.volume = 1.0;
-            bgMusic.play().catch(e => console.log("Музыканы қолмен қосу керек болуы мүмкін"));
-
-            mainScreen.style.opacity = '0';
-            setTimeout(() => {
-                mainScreen.style.display = 'none';
-                successScreen.style.display = 'flex';
-                setTimeout(() => { successScreen.style.opacity = '1'; }, 50);
-                document.body.style.backgroundColor = '#ffffff';
-                
-                setInterval(createHeart, 300); // Гүлдер шашу
-                setInterval(showSlides, 3000); // Суреттерді ауыстыру
-            }, 500);
+            bgMusic.play().catch(() => {});
+            document.getElementById('mainScreen').style.display = 'none';
+            const ss = document.getElementById('successScreen');
+            ss.style.display = 'flex';
+            setTimeout(() => ss.style.opacity = '1', 50);
+            
+            setInterval(createHeart, 300);
+            startSlides();
         }
 
-        // Гүлдер (Тюльпандар) эффектісі
+        function startSlides() {
+            let index = 0;
+            const images = document.querySelectorAll('.slideshow-container img');
+            setInterval(() => {
+                images[index].classList.remove('active');
+                index = (index + 1) % images.length;
+                images[index].classList.add('active');
+            }, 3000);
+        }
+
         function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            const icons = ['🌷', '🌸', '🌹', '❤️'];
-            heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 4000);
+            const h = document.createElement('div');
+            h.className = 'heart';
+            h.innerHTML = ['🌷','🌸','🌹','❤️'][Math.floor(Math.random()*4)];
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.animationDuration = (Math.random()*2+3)+'s';
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 4000);
         }
     </script>
 </body>
