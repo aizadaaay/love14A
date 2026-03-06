@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="kk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Для вас ❤️</title>
+    <title>Сіздерге арналған тосын сый ❤️</title>
     <style>
         :root {
             --primary-color: #ff4d6d;
             --bg-color: #fff0f3;
-            /* Время показа одного фото (в секундах) */
             --slide-duration: 3s; 
         }
 
@@ -21,8 +20,8 @@
             min-height: 100vh;
             background-color: var(--bg-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden; /* Запрещаем горизонтальный скролл */
-            overflow-y: auto; /* Разрешаем вертикальный, если текст не влезает */
+            overflow-x: hidden;
+            overflow-y: auto;
             transition: background 1s ease;
             touch-action: manipulation;
         }
@@ -33,7 +32,7 @@
             z-index: 10;
             padding: 20px;
             width: 100%;
-            max-width: 500px; /* Ограничим максимальную ширину для красоты */
+            max-width: 500px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -45,47 +44,43 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Общие стили для медиа (гифки и слайд-шоу) */
-        .gif-container img, .slideshow-container {
+        .media-box {
             max-width: 280px;
             width: 90%;
-            aspect-ratio: 1 / 1; /* Делаем квадратными для единообразия */
-            object-fit: cover; /* Изображение заполняет квадрат, не растягиваясь */
+            aspect-ratio: 1 / 1;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             margin-bottom: 20px;
+            overflow: hidden;
+            background: #fff;
         }
 
         .gif-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             animation: float 3s ease-in-out infinite;
         }
 
-        /* --- Стили для Слайд-шоу --- */
         .slideshow-container {
             position: relative;
-            overflow: hidden;
-            border: 4px solid #fff; /* Красивая белая рамка */
+            width: 100%;
+            height: 100%;
         }
 
         .slideshow-container img {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             object-fit: cover;
-            opacity: 0; /* Изначально все скрыты */
-            transition: opacity 1s ease-in-out, transform 1s ease-in-out; /* Плавная смена и зум */
-            transform: scale(1.1); /* Легкий начальный зум для эффекта Кенна Бернса */
-            margin: 0;
-            border-radius: 0; /* Рамка теперь у контейнера */
-            box-shadow: none;
+            opacity: 0;
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+            transform: scale(1.1);
         }
 
-        /* Класс для активного (видимого) слайда */
         .slideshow-container img.active {
             opacity: 1;
-            transform: scale(1); /* Возвращаем к нормальному размеру */
+            transform: scale(1);
         }
 
         @keyframes float {
@@ -95,10 +90,10 @@
 
         h1 {
             color: #c9184a;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             margin: 10px 0 25px 0;
             padding: 0 10px;
-            line-height: 1.2;
+            line-height: 1.3;
         }
 
         .buttons {
@@ -107,82 +102,80 @@
             align-items: center;
             gap: 15px;
             width: 100%;
-            height: 120px;
+            height: 140px;
             position: relative;
         }
 
         button {
             padding: 15px 0;
-            width: 200px;
+            width: 220px;
             font-size: 1.2rem;
             font-weight: bold;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s ease, opacity 0.3s ease;
-            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         #yesBtn {
             background-color: var(--primary-color);
             color: white;
-            box-shadow: 0 8px 15px rgba(255, 77, 109, 0.4);
-            position: relative;
             z-index: 5;
         }
 
         #noBtn {
             background-color: #adb5bd;
             color: white;
-            position: relative;
             z-index: 10;
-            transition: left 0.2s ease, top 0.2s ease;
         }
 
         #successScreen {
             display: none;
             opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .success-msg {
-            font-size: 1.1rem;
-            color: #333;
-            line-height: 1.5;
-            padding: 10px;
-            width: 100%;
-            box-sizing: border-box;
         }
 
         .invite-card {
             background: white;
-            padding: 15px;
+            padding: 20px;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(255, 77, 109, 0.15);
             margin: 15px 0;
             text-align: left;
-            border-left: 5px solid #ff4d6d;
+            border-left: 6px solid #ff4d6d;
             width: 100%;
             box-sizing: border-box;
         }
 
         .invite-card p {
-            margin: 6px 0;
+            margin: 8px 0;
             font-size: 1rem;
+            color: #444;
+        }
+
+        .btn-2gis {
+            display: inline-block;
+            margin-top: 10px;
+            background: #2ab44a;
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: bold;
         }
 
         .kazakh-text {
             color: #c9184a;
             font-weight: bold;
             font-size: 1.2rem;
-            margin-top: 15px;
-            line-height: 1.3;
+            margin-top: 20px;
+            line-height: 1.4;
         }
 
         .heart {
             position: fixed;
             font-size: 20px;
-            color: var(--primary-color);
             pointer-events: none;
             animation: moveHearts 4s linear forwards;
             z-index: 1;
@@ -196,49 +189,49 @@
 </head>
 <body>
 
-    <audio id="bgMusic" loop>
+    <audio id="bgMusic" loop preload="auto">
         <source src="music.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container" id="mainScreen">
-        <div class="gif-container">
+        <div class="media-box gif-container">
             <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExenIyYjBvMzk4Ynp2MGpyMnQwemwyMzB4M3kxYXZvd3RzM28yYnNlaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0OgdJVNjbcIifqSb7U/giphy.gif" alt="Cat">
         </div>
-        <h1>Пойдете с нами на праздничный ужин? 🌷</h1>
+        <h1>Мерекелік кешкі асқа бізбен бірге баруға қалай қарайсыздар? 🌷</h1>
         
         <div class="buttons">
-            <button id="yesBtn" onclick="showSuccess()">ДА!</button>
-            <button id="noBtn">Нет</button>
+            <button id="yesBtn" onclick="showSuccess()">Әрине, барамыз! ❤️</button>
+            <button id="noBtn">Жоқ</button>
         </div>
     </div>
 
     <div class="container" id="successScreen">
-        
-        <div class="slideshow-container">
-            <img src="5e71eb83-b545-4674-af8d-e1a9a39d0d2b.jpeg" alt="Фото группы 1" class="active">
-            <img src="b5b2e6d7-ddbe-421f-9d27-b5fc0229da54.jpeg" alt="Фото группы 2">
-            <img src="c64bebbd-3c35-4284-8789-69513c1db768.jpeg" alt="Фото группы 3">
-            <img src="4a415bdc-4f30-4b49-8dfd-416e88da3a69.jpeg" alt="Фото группы 4">
+        <div class="media-box">
+            <div class="slideshow-container">
+                <img src="5e71eb83-b545-4674-af8d-e1a9a39d0d2b.jpeg" alt="Топ 1" class="active">
+                <img src="b5b2e6d7-ddbe-421f-9d27-b5fc0229da54.jpeg" alt="Топ 2">
+                <img src="c64bebbd-3c35-4284-8789-69513c1db768.jpeg" alt="Топ 3">
+                <img src="4a415bdc-4f30-4b49-8dfd-416e88da3a69.jpeg" alt="Топ 4">
             </div>
+        </div>
 
         <div class="success-msg">
-    <h2 style="color: #ff4d6d; margin: 0 0 10px 0; font-size: 1.6rem;">Керемет! Басқаша болып мүмкін емес еді! ✨</h2>
-    
-    <div style="margin-bottom: 10px; font-weight: 500;">
-        Сіздердің келісімдеріңіз — біз үшін ең үлкен сыйлық! Кездесуді асыға күтеміз:
-    </div>
-    
-    <div class="invite-card">
-        <p>📍 <b>Мекенжайымыз:</b> Жамақаев көшесі, 144</p>
-        <p style="font-size: 0.9em; color: #777; margin-top: -3px; margin-left: 20px; margin-bottom: 8px;">(Tau Uzbechka мейрамханасы)</p>
-        <p>📅 <b>Күні:</b> 9 наурыз</p>
-        <p>🕘 <b>Уақыты:</b> 18:00</p>
-    </div>
+            <h2 style="color: #ff4d6d; margin: 0; font-size: 1.7rem;">Керемет! 😍</h2>
+            <p style="margin: 10px 0;">Сіздердің келісімдеріңіз — біз үшін ең үлкен сыйлық! Кездесуді асыға күтеміз:</p>
+            
+            <div class="invite-card">
+                <p>📍 <b>Мекенжай:</b> Жамақаев көшесі, 144</p>
+                <p style="font-size: 0.85rem; color: #777; margin-top: -5px; margin-bottom: 10px;">(Tau Uzbechka мейрамханасы)</p>
+                <p>📅 <b>Күні:</b> 9 наурыз</p>
+                <p>🕘 <b>Уақыты:</b> 18:00</p>
+                <a href="https://2gis.kz/almaty/geo/70000001095720040" target="_blank" class="btn-2gis">📍 2GIS-те ашу</a>
+            </div>
 
-    <div class="kazakh-text">
-        22-02 тобының жігіттерінен сіздерге <br> шын жүректен, ерекше құрметпен! 🌹
+            <div class="kazakh-text">
+                22-02 тобының жігіттерінен сіздерге <br> шын жүректен! 🌹
+            </div>
+        </div>
     </div>
-</div>
 
     <script>
         const noBtn = document.getElementById('noBtn');
@@ -246,11 +239,11 @@
         const successScreen = document.getElementById('successScreen');
         const bgMusic = document.getElementById('bgMusic');
 
-        // --- Логика убегающей кнопки ---
+        // Қашатын батырма логикасы
         function moveButton(e) {
             if (e) e.preventDefault();
             noBtn.style.position = 'fixed';
-            const padding = 20;
+            const padding = 25;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
             const randomX = Math.floor(Math.random() * (maxX - padding) + padding);
@@ -261,66 +254,46 @@
 
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', moveButton);
-        noBtn.addEventListener('click', (e) => { e.preventDefault(); moveButton(e); });
 
-        // --- Логика Слайд-шоу ---
+        // Слайд-шоу логикасы
         let slideIndex = 0;
-        let slideshowInterval;
-
         function showSlides() {
             const slides = document.querySelectorAll('.slideshow-container img');
-            if (slides.length === 0) return; // Если фото нет, ничего не делаем
-
-            // Убираем класс active у текущего слайда
+            if (slides.length < 2) return;
             slides[slideIndex].classList.remove('active');
-            
-            // Увеличиваем индекс, сбрасываем в 0, если дошли до конца
             slideIndex = (slideIndex + 1) % slides.length;
-            
-            // Добавляем класс active следующему слайду
             slides[slideIndex].classList.add('active');
         }
 
-        // --- Переход на экран успеха ---
+        // "ИӘ" батырмасын басқанда
         function showSuccess() {
-            // 1. Музыка
-            bgMusic.play().catch(error => console.log("Автоплей музыки заблокирован браузером"));
+            // Музыканы қосу
+            bgMusic.volume = 1.0;
+            bgMusic.play().catch(e => console.log("Музыканы қолмен қосу керек болуы мүмкін"));
 
-            // 2. Смена экранов
             mainScreen.style.opacity = '0';
             setTimeout(() => {
                 mainScreen.style.display = 'none';
                 successScreen.style.display = 'flex';
-                // Небольшая задержка перед появлением, чтобы opacity сработала
                 setTimeout(() => { successScreen.style.opacity = '1'; }, 50);
                 document.body.style.backgroundColor = '#ffffff';
                 
-                // 3. Запуск эффектов
-                startHearts();
-                
-                // 4. Запуск слайд-шоу (интервал берется из CSS переменной)
-                const duration = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--slide-duration')) * 1000;
-                slideshowInterval = setInterval(showSlides, duration);
-                
+                setInterval(createHeart, 300); // Гүлдер шашу
+                setInterval(showSlides, 3000); // Суреттерді ауыстыру
             }, 500);
         }
 
-        // --- Эффект падающих тюльпанов ---
+        // Гүлдер (Тюльпандар) эффектісі
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
-            heart.innerHTML = '🌷'; 
+            const icons = ['🌷', '🌸', '🌹', '❤️'];
+            heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
             document.body.appendChild(heart);
             setTimeout(() => heart.remove(), 4000);
         }
-
-        function startHearts() {
-            setInterval(createHeart, 300);
-        }
     </script>
 </body>
 </html>
-
-
