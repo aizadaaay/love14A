@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Для тебя ❤️</title>
+    <title>Для вас ❤️</title>
     <style>
         :root {
             --primary-color: #ff4d6d;
             --bg-color: #fff0f3;
+            /* Время показа одного фото (в секундах) */
+            --slide-duration: 3s; 
         }
 
         body {
@@ -16,10 +18,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             background-color: var(--bg-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
+            overflow-x: hidden; /* Запрещаем горизонтальный скролл */
+            overflow-y: auto; /* Разрешаем вертикальный, если текст не влезает */
             transition: background 1s ease;
             touch-action: manipulation;
         }
@@ -30,9 +33,11 @@
             z-index: 10;
             padding: 20px;
             width: 100%;
+            max-width: 500px; /* Ограничим максимальную ширину для красоты */
             display: flex;
             flex-direction: column;
             align-items: center;
+            box-sizing: border-box;
         }
 
         @keyframes fadeIn {
@@ -40,12 +45,47 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .gif-container img {
-            max-width: 250px;
-            width: 80%;
+        /* Общие стили для медиа (гифки и слайд-шоу) */
+        .gif-container img, .slideshow-container {
+            max-width: 280px;
+            width: 90%;
+            aspect-ratio: 1 / 1; /* Делаем квадратными для единообразия */
+            object-fit: cover; /* Изображение заполняет квадрат, не растягиваясь */
             border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .gif-container img {
             animation: float 3s ease-in-out infinite;
-            margin-bottom: 10px;
+        }
+
+        /* --- Стили для Слайд-шоу --- */
+        .slideshow-container {
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #fff; /* Красивая белая рамка */
+        }
+
+        .slideshow-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0; /* Изначально все скрыты */
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out; /* Плавная смена и зум */
+            transform: scale(1.1); /* Легкий начальный зум для эффекта Кенна Бернса */
+            margin: 0;
+            border-radius: 0; /* Рамка теперь у контейнера */
+            box-shadow: none;
+        }
+
+        /* Класс для активного (видимого) слайда */
+        .slideshow-container img.active {
+            opacity: 1;
+            transform: scale(1); /* Возвращаем к нормальному размеру */
         }
 
         @keyframes float {
@@ -56,23 +96,24 @@
         h1 {
             color: #c9184a;
             font-size: 1.8rem;
-            margin: 15px 0 25px 0;
+            margin: 10px 0 25px 0;
             padding: 0 10px;
+            line-height: 1.2;
         }
 
         .buttons {
             display: flex;
-            flex-direction: column; /* Кнопки в столбик */
+            flex-direction: column;
             align-items: center;
             gap: 15px;
             width: 100%;
-            height: 120px; /* Фиксируем высоту, чтобы не дергалось */
+            height: 120px;
             position: relative;
         }
 
         button {
             padding: 15px 0;
-            width: 200px; /* Одинаковая ширина */
+            width: 200px;
             font-size: 1.2rem;
             font-weight: bold;
             border: none;
@@ -93,20 +134,49 @@
         #noBtn {
             background-color: #adb5bd;
             color: white;
-            position: relative; /* В начале стоит на месте */
+            position: relative;
             z-index: 10;
-            transition: left 0.2s ease, top 0.2s ease; /* Плавный полет */
+            transition: left 0.2s ease, top 0.2s ease;
         }
 
         #successScreen {
             display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
         .success-msg {
-            font-size: 1.6rem;
-            color: #ff4d6d;
-            line-height: 1.4;
-            padding: 20px;
+            font-size: 1.1rem;
+            color: #333;
+            line-height: 1.5;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .invite-card {
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(255, 77, 109, 0.15);
+            margin: 15px 0;
+            text-align: left;
+            border-left: 5px solid #ff4d6d;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .invite-card p {
+            margin: 6px 0;
+            font-size: 1rem;
+        }
+
+        .kazakh-text {
+            color: #c9184a;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 15px;
+            line-height: 1.3;
         }
 
         .heart {
@@ -126,11 +196,15 @@
 </head>
 <body>
 
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
     <div class="container" id="mainScreen">
         <div class="gif-container">
             <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExenIyYjBvMzk4Ynp2MGpyMnQwemwyMzB4M3kxYXZvd3RzM28yYnNlaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0OgdJVNjbcIifqSb7U/giphy.gif" alt="Cat">
         </div>
-        <h1>Пойдешь со мной на свидание? ❤️</h1>
+        <h1>Пойдете с нами на праздничный ужин? 🌷</h1>
         
         <div class="buttons">
             <button id="yesBtn" onclick="showSuccess()">ДА!</button>
@@ -139,13 +213,28 @@
     </div>
 
     <div class="container" id="successScreen">
-        <div class="gif-container">
-            <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNG93c3dhaGxtMm56eGdzZnBzcHRsdXF3NDd6ZGE2MDIwNHUwbW10ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/f9EmXxglhdhAj1bo28/giphy.gif" alt="Happy Cat">
-        </div>
+        
+        <div class="slideshow-container">
+            <img src="nd1.jpg" alt="Фото группы 1" class="active">
+            <img src="nd2.jpg" alt="Фото группы 2">
+            <img src="nd3.jpg" alt="Фото группы 3">
+            <img src="nd4.jpg" alt="Фото группы 4">
+            </div>
+
         <div class="success-msg">
-            Урааа! 😍 <br>
-            Я знал(а), что ты согласишься! <br>
-            <span style="font-size: 1.1rem; color: #555;">Встретимся в 19:00! ✨</span>
+            <h2 style="color: #ff4d6d; margin: 0 0 10px 0; font-size: 1.6rem;">8 Наурыз мерекесімен! 🌸</h2>
+            <div style="margin-bottom: 10px;">Ура! Мы так и знали, что вы согласитесь! Ждем вас:</div>
+            
+            <div class="invite-card">
+                <p>📍 <b>Локация:</b> Улица Жамакаева, 144</p>
+                <p style="font-size: 0.9em; color: #777; margin-top: -3px; margin-left: 20px; margin-bottom: 8px;">(Ресторан Tau Uzbechka)</p>
+                <p>📅 <b>Дата:</b> 9 марта</p>
+                <p>🕘 <b>Время:</b> 18:00</p>
+            </div>
+
+            <div class="kazakh-text">
+                22-02 тобының жігіттерінен сіздерге шын жүректен! ❤️
+            </div>
         </div>
     </div>
 
@@ -153,48 +242,72 @@
         const noBtn = document.getElementById('noBtn');
         const mainScreen = document.getElementById('mainScreen');
         const successScreen = document.getElementById('successScreen');
+        const bgMusic = document.getElementById('bgMusic');
 
+        // --- Логика убегающей кнопки ---
         function moveButton(e) {
             if (e) e.preventDefault();
-
-            // При первом же взаимодействии делаем кнопку фиксированной
             noBtn.style.position = 'fixed';
-
-            // Вычисляем границы так, чтобы кнопка не вылетала за экран
             const padding = 20;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
-
             const randomX = Math.floor(Math.random() * (maxX - padding) + padding);
             const randomY = Math.floor(Math.random() * (maxY - padding) + padding);
-
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
         }
 
-        // События для ПК и Телефонов
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', moveButton);
-        noBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            moveButton(e);
-        });
+        noBtn.addEventListener('click', (e) => { e.preventDefault(); moveButton(e); });
 
+        // --- Логика Слайд-шоу ---
+        let slideIndex = 0;
+        let slideshowInterval;
+
+        function showSlides() {
+            const slides = document.querySelectorAll('.slideshow-container img');
+            if (slides.length === 0) return; // Если фото нет, ничего не делаем
+
+            // Убираем класс active у текущего слайда
+            slides[slideIndex].classList.remove('active');
+            
+            // Увеличиваем индекс, сбрасываем в 0, если дошли до конца
+            slideIndex = (slideIndex + 1) % slides.length;
+            
+            // Добавляем класс active следующему слайду
+            slides[slideIndex].classList.add('active');
+        }
+
+        // --- Переход на экран успеха ---
         function showSuccess() {
+            // 1. Музыка
+            bgMusic.play().catch(error => console.log("Автоплей музыки заблокирован браузером"));
+
+            // 2. Смена экранов
             mainScreen.style.opacity = '0';
             setTimeout(() => {
                 mainScreen.style.display = 'none';
                 successScreen.style.display = 'flex';
-                successScreen.style.opacity = '1';
+                // Небольшая задержка перед появлением, чтобы opacity сработала
+                setTimeout(() => { successScreen.style.opacity = '1'; }, 50);
                 document.body.style.backgroundColor = '#ffffff';
+                
+                // 3. Запуск эффектов
                 startHearts();
+                
+                // 4. Запуск слайд-шоу (интервал берется из CSS переменной)
+                const duration = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--slide-duration')) * 1000;
+                slideshowInterval = setInterval(showSlides, duration);
+                
             }, 500);
         }
 
+        // --- Эффект падающих тюльпанов ---
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
-            heart.innerHTML = '❤️';
+            heart.innerHTML = '🌷'; 
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
             document.body.appendChild(heart);
