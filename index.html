@@ -205,7 +205,7 @@
         const noBtn = document.getElementById('noBtn');
         const bgMusic = document.getElementById('bgMusic');
 
-        // Қашатын батырма
+        // Қашатын батырма (Убегающая кнопка)
         function moveButton() {
             const padding = 50;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
@@ -217,17 +217,37 @@
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
-        // Музыканы бақылау (Сайттан шыққанда өшу)
+        // Музыканы басқару (Управление музыкой)
+        function stopMusic() {
+            bgMusic.pause();
+        }
+
+        function playMusic() {
+            // Музыка должна играть только если открыт successScreen
+            if (document.getElementById('successScreen').style.display === 'flex') {
+                bgMusic.play().catch(() => {
+                    console.log("Автоплей заблокирован браузером");
+                });
+            }
+        }
+
+        // 1. При сворачивании браузера или переключении вкладок
         document.addEventListener("visibilitychange", () => {
             if (document.hidden) {
-                bgMusic.pause();
+                stopMusic();
             } else {
-                if (document.getElementById('successScreen').style.display === 'flex') {
-                    bgMusic.play();
-                }
+                playMusic();
             }
         });
 
+        // 2. При уходе со страницы (закрытие вкладки или переход по ссылке)
+        window.addEventListener("pagehide", stopMusic);
+
+        // 3. При потере фокуса окна (например, открытие шторки уведомлений или другого окна поверх)
+        window.addEventListener("blur", stopMusic);
+        window.addEventListener("focus", playMusic);
+
+        // Успешный экран
         function showSuccess() {
             bgMusic.play().catch(() => {});
             document.getElementById('mainScreen').style.display = 'none';
@@ -239,6 +259,7 @@
             startSlides();
         }
 
+        // Слайдер фотографий
         function startSlides() {
             let index = 0;
             const images = document.querySelectorAll('.slideshow-container img');
@@ -249,6 +270,7 @@
             }, 3000);
         }
 
+        // Анимация сердечек
         function createHeart() {
             const h = document.createElement('div');
             h.className = 'heart';
@@ -261,3 +283,4 @@
     </script>
 </body>
 </html>
+
