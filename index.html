@@ -11,7 +11,7 @@
             --slide-duration: 3s; 
         }
 
-        /* Текст пен элементтер көк болып ерекшеленбеуі үшін */
+        /* Мәтін мен элементтер көк болып ерекшеленбеуі үшін */
         * {
             -webkit-tap-highlight-color: transparent;
             user-select: none;
@@ -34,7 +34,6 @@
 
         .container {
             text-align: center;
-            /* Бірдей анимация екі экранға да қолданылады */
             animation: fadeIn 1.2s ease forwards;
             z-index: 10;
             padding: 20px;
@@ -113,14 +112,14 @@
         }
 
         #successScreen {
-            display: none; /* Әдепкі бойынша жасырулы */
+            display: none;
             flex-direction: column;
             align-items: center;
         }
 
         .invite-card {
             background: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(255, 77, 109, 0.15);
             margin: 15px 0;
@@ -180,24 +179,35 @@
         </div>
     </div>
 
-    <div class="invite-card">
-    <h2 style="color: #ff4d6d; margin: 0 0 10px 0; font-size: 1.6rem; text-align: center;">Керемет таңдау! 😍</h2>
-    
-    <p style="font-style: italic; color: #555; line-height: 1.5; text-align: center; margin-bottom: 15px;">
-        "Көктемнің шуақты күніндей жарқыраған сіздерді мерекелік дастархан басында көру — біз үшін үлкен мәртебе. Көңілдеріңіз гүлдей жайнап, жүздеріңізден күлкі кетпесін!" 🌸
-    </p>
+    <div class="container" id="successScreen">
+        <div class="media-box">
+            <div class="slideshow-container" id="slideshow">
+                <img src="5e71eb83-b545-4674-af8d-e1a9a39d0d2b.jpeg" class="active">
+                <img src="b5b2e6d7-ddbe-421f-9d27-b5fc0229da54.jpeg">
+                <img src="c64bebbd-3c35-4284-8789-69513c1db768.jpeg">
+                <img src="4a415bdc-4f30-4b49-8dfd-416e88da3a69.jpeg">
+            </div>
+        </div>
 
-    <div style="border-top: 1px dashed #ff4d6d; padding-top: 10px;">
-        <p>📍 <b>Мекенжай:</b> Жамақаев көшесі, 144</p>
-        <p>📅 <b>Күні:</b> 9 наурыз, сағат 18:00</p>
-        <p>✨ <b>Көңіл-күй:</b> Көтеріңкі болсын!</p>
-    </div>
+        <div class="invite-card">
+            <h2 style="color: #ff4d6d; margin: 0 0 10px 0; font-size: 1.6rem; text-align: center;">Керемет таңдау! 😍</h2>
+            
+            <p style="font-style: italic; color: #555; line-height: 1.5; text-align: center; margin-bottom: 15px;">
+                "Көктемнің шуақты күніндей жарқыраған сіздерді мерекелік дастархан басында көру — біз үшін үлкен мәртебе. Көңілдеріңіз гүлдей жайнап, жүздеріңізден күлкі кетпесін!" 🌸
+            </p>
 
-    <a href="https://2gis.kz/almaty/geo/70000001095720040" target="_blank" class="btn-2gis">🗺️ 2GIS Картаны ашу</a>
-</div>
-<p style="color: #c9184a; font-weight: bold; font-size: 1.1rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
-    Терең құрметпен: 22-02 жігіттерінен! 🌹
-</p>
+            <div style="border-top: 1px dashed #ff4d6d; padding-top: 10px;">
+                <p>📍 <b>Мекенжай:</b> Жамақаев көшесі, 144</p>
+                <p>📅 <b>Күні:</b> 9 наурыз, сағат 18:00</p>
+                <p>✨ <b>Көңіл-күй:</b> Көтеріңкі болсын!</p>
+            </div>
+
+            <a href="https://2gis.kz/almaty/geo/70000001095720040" target="_blank" class="btn-2gis">🗺️ 2GIS Картаны ашу</a>
+        </div>
+        
+        <p style="color: #c9184a; font-weight: bold; font-size: 1.1rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+            Терең құрметпен: 22-02 жігіттерінен! 🌹
+        </p>
     </div>
 
     <script>
@@ -218,43 +228,35 @@
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
-        // МУЗЫКАНЫ БАСҚАРУ ФУНКЦИЯЛАРЫ
+        // Музыканы басқару
         function stopMusic() {
             bgMusic.pause();
         }
 
         function playMusic() {
-            // Музыка тек екінші экран ашық болса ғана ойнайды
             if (successScreen.style.display === 'flex') {
-                bgMusic.play().catch(() => console.log("Браузер музыканы бұғаттады"));
+                bgMusic.play().catch(() => console.log("Музыка бұғатталды"));
             }
         }
 
-        // Вкладка ауысқанда немесе браузерді жапқанда музыканы өшіру
         document.addEventListener("visibilitychange", () => {
-            if (document.hidden) {
-                stopMusic();
-            } else {
-                playMusic();
-            }
+            if (document.hidden) stopMusic();
+            else playMusic();
         });
 
-        // Беттен шығып кеткенде (Картаға өткенде де жұмыс істейді)
         window.addEventListener("pagehide", stopMusic);
         window.addEventListener("blur", stopMusic);
         window.addEventListener("focus", playMusic);
 
-        // Сәттілік экранын көрсету
         function showSuccess() {
-            mainScreen.style.display = 'none'; // Бірінші экранды өшіру
-            successScreen.style.display = 'flex'; // Екіншіні қосу
+            mainScreen.style.display = 'none';
+            successScreen.style.display = 'flex';
             
-            playMusic(); // Музыканы қосу
-            setInterval(createHeart, 300); // Жүрекшелерді жіберу
-            startSlides(); // Слайдшоуды бастау
+            playMusic();
+            setInterval(createHeart, 300);
+            startSlides();
         }
 
-        // Слайдшоу логикасы
         function startSlides() {
             let index = 0;
             const images = document.querySelectorAll('.slideshow-container img');
@@ -267,7 +269,6 @@
             }, 3000);
         }
 
-        // Жүрекшелер анимациясы
         function createHeart() {
             const h = document.createElement('div');
             h.className = 'heart';
@@ -280,4 +281,5 @@
     </script>
 </body>
 </html>
+
 
