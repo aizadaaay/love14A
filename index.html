@@ -6,60 +6,68 @@
     <title>Сіздерге арналған тосын сый ❤️</title>
     <style>
         :root {
-            --primary-color: #ff4d6d;
-            --bg-color: #fff0f3;
-            --slide-duration: 3s; 
+            --primary: #ff4d6d;
+            --secondary: #ff85a1;
+            --glass: rgba(255, 255, 255, 0.8);
+            --shadow: 0 8px 32px 0 rgba(255, 77, 109, 0.2);
         }
 
-        /* Мәтін мен элементтер көк болып ерекшеленбеуі үшін */
         * {
             -webkit-tap-highlight-color: transparent;
             user-select: none;
-            -webkit-user-select: none;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
-            padding: 0;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background-color: var(--bg-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Анимирленген градиентті фон */
+            background: linear-gradient(-45deg, #fff0f3, #ffccd5, #fff0f3, #ffb3c6);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             overflow-x: hidden;
-            overflow-y: auto;
-            transition: background 1s ease;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
+            width: 90%;
+            max-width: 420px;
+            padding: 25px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: var(--shadow);
             text-align: center;
-            animation: fadeIn 1.2s ease forwards;
+            animation: cardAppear 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
             z-index: 10;
-            padding: 20px;
-            width: 100%;
-            max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-sizing: border-box;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes cardAppear {
+            from { opacity: 0; transform: scale(0.9) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .media-box {
-            max-width: 280px;
-            width: 90%;
-            aspect-ratio: 1 / 1;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 22px;
+            margin-bottom: 25px;
             overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
             background: #fff;
-            position: relative;
         }
 
         .slideshow-container {
@@ -74,7 +82,7 @@
             width: 100%; height: 100%;
             object-fit: cover;
             opacity: 0;
-            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+            transition: all 1.2s ease-in-out;
             transform: scale(1.1);
         }
 
@@ -85,86 +93,123 @@
 
         h1 {
             color: #c9184a;
-            font-size: 1.6rem;
-            line-height: 1.3;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            line-height: 1.4;
         }
 
         .buttons {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 15px;
+            gap: 12px;
             width: 100%;
-            height: 140px;
-            position: relative;
         }
 
         button {
-            padding: 15px 0;
-            width: 220px;
-            font-size: 1.2rem;
-            font-weight: bold;
             border: none;
-            border-radius: 50px;
+            padding: 16px;
+            border-radius: 18px;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
-            background-color: var(--primary-color);
-            color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        #yesBtn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+        }
+
+        #yesBtn:active { transform: scale(0.96); }
 
         #noBtn {
-            background-color: #adb5bd;
+            background: #f8f9fa;
+            color: #adb5bd;
+            font-size: 0.9rem;
         }
 
+        /* Табысты экран стилі */
         #successScreen {
             display: none;
             flex-direction: column;
-            align-items: center;
         }
 
-        .invite-card {
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(255, 77, 109, 0.15);
-            margin: 15px 0;
+        .invite-details {
             text-align: left;
-            border-left: 6px solid #ff4d6d;
-            width: 100%;
-            box-sizing: border-box;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+        }
+
+        .invite-details p {
+            margin: 8px 0;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .countdown-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        .time-unit {
+            background: white;
+            padding: 10px 5px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .time-num {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .time-label {
+            font-size: 0.65rem;
+            color: #999;
+            text-transform: uppercase;
         }
 
         .btn-2gis {
-            display: block;
-            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             background: #2ab44a;
-            color: white !important;
+            color: white;
             text-decoration: none;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: bold;
-            text-align: center;
+            padding: 15px;
+            border-radius: 18px;
+            font-weight: 600;
+            margin-top: 10px;
             transition: 0.3s;
-        }
-
-        .btn-2gis:active {
-            transform: scale(0.95);
-            background: #23943d;
         }
 
         .heart {
             position: fixed;
-            font-size: 20px;
             pointer-events: none;
-            animation: moveHearts 4s linear forwards;
             z-index: 1;
+            animation: moveHearts 4s linear forwards;
         }
 
         @keyframes moveHearts {
-            0% { transform: translateY(100vh) scale(0); opacity: 1; }
-            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+            0% { transform: translateY(100vh) scale(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5) rotate(360deg); opacity: 0; }
+        }
+
+        .signature {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -176,7 +221,7 @@
 
     <div class="container" id="mainScreen">
         <div class="media-box">
-            <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExenIyYjBvMzk4Ynp2MGpyMnQwemwyMzB4M3kxYXZvd3RzM28yYnNlaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0OgdJVNjbcIifqSb7U/giphy.gif" style="width:100%; height:100%; object-fit:cover;" alt="gif">
+            <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExenIyYjBvMzk4Ynp2MGpyMnQwemwyMzB4M3kxYXZvd3RzM28yYnNlaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0OgdJVNjbcIifqSb7U/giphy.gif" style="width:100%; height:100%; object-fit:cover;">
         </div>
         <h1>Мерекелік кешкі асқа бізбен бірге баруға қалай қарайсыздар? 🌷</h1>
         <div class="buttons">
@@ -188,42 +233,41 @@
     <div class="container" id="successScreen">
         <div class="media-box">
             <div class="slideshow-container" id="slideshow">
-                <img src="5e71eb83-b545-4674-af8d-e1a9a39d0d2b.jpeg" class="active" alt="img1">
-                <img src="b5b2e6d7-ddbe-421f-9d27-b5fc0229da54.jpeg" alt="img2">
-                <img src="c64bebbd-3c35-4284-8789-69513c1db768.jpeg" alt="img3">
-                <img src="4a415bdc-4f30-4b49-8dfd-416e88da3a69.jpeg" alt="img4">
-                <img src="659e9ddb-fad5-428c-9ff0-254863438c22.jpeg" alt="img5">
-                <img src="6762d7e1-5dc5-461d-b88e-972487af0fb2.jpeg" alt="img6">
-                <img src="ae5cd613-0a23-456a-b17e-18dbebf23eeb.jpeg" alt="img7">
-                <img src="4dd84c20-7b36-40f7-b4bc-ccbc98c495fb.jpeg" alt="img8">
-                <img src="3b9bc54e-e1f2-4071-9264-c3f2c13333d2.jpeg" alt="img9">
-                <img src="df5e8465-4553-4fb3-9ca2-e20d8c8ad3f1.jpeg" alt="img10">
+                <img src="5e71eb83-b545-4674-af8d-e1a9a39d0d2b.jpeg" class="active">
+                <img src="b5b2e6d7-ddbe-421f-9d27-b5fc0229da54.jpeg">
+                <img src="c64bebbd-3c35-4284-8789-69513c1db768.jpeg">
+                <img src="4a415bdc-4f30-4b49-8dfd-416e88da3a69.jpeg">
+                <img src="659e9ddb-fad5-428c-9ff0-254863438c22.jpeg">
+                <img src="6762d7e1-5dc5-461d-b88e-972487af0fb2.jpeg">
+                <img src="ae5cd613-0a23-456a-b17e-18dbebf23eeb.jpeg">
+                <img src="4dd84c20-7b36-40f7-b4bc-ccbc98c495fb.jpeg">
+                <img src="3b9bc54e-e1f2-4071-9264-c3f2c13333d2.jpeg">
+                <img src="df5e8465-4553-4fb3-9ca2-e20d8c8ad3f1.jpeg">
             </div>
         </div>
 
-        <div class="invite-card">
-            <h2 style="color: #ff4d6d; margin: 0 0 10px 0; font-size: 1.6rem; text-align: center;">Керемет таңдау! 😍</h2>
-            
-            <p style="font-style: italic; color: #555; line-height: 1.5; text-align: center; margin-bottom: 15px;">
-                "Көктемнің шуақты күніндей жарқыраған сіздерді мерекелік дастархан басында көру — біз үшін үлкен мәртебе. Көңілдеріңіз гүлдей жайнап, жүздеріңізден күлкі кетпесін!" 🌸
-            </p>
-
-            <div style="border-top: 1px dashed #ff4d6d; padding-top: 10px;">
-                <p>📍 <b>Мекенжай:</b> Жамақаев көшесі, 144</p>
-                <p>📅 <b>Күні:</b> 9 наурыз, сағат 18:00</p>
-                <p>✨ <b>Көңіл-күй:</b> Көтеріңкі болсын!</p>
-            </div>
-
-            <div id="countdown" style="margin-top: 15px; font-weight: bold; color: #c9184a; text-align: center; background: #fff0f3; padding: 12px; border-radius: 12px; border: 1px solid #ffb3c6;">
-                ⏳ Есептелуде...
-            </div>
-
-            <a href="https://2gis.kz/almaty/geo/70000001095720040" target="_blank" class="btn-2gis">🗺️ 2GIS Картаны ашу</a>
-        </div>
-        
-        <p style="color: #c9184a; font-weight: bold; font-size: 1.1rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
-            Терең құрметпен: 22-02 жігіттерінен! 🌹
+        <h2 style="color: var(--primary); margin-bottom: 10px;">Керемет таңдау! 😍</h2>
+        <p style="font-size: 0.9rem; color: #666; font-style: italic; line-height: 1.5;">
+            "Сіздерді мерекелік дастархан басында көру — біз үшін үлкен мәртебе!"
         </p>
+
+        <div class="invite-details">
+            <p>📍 <b>Мекенжай:</b> Жамақаев көшесі, 144</p>
+            <p>📅 <b>Күні:</b> 9 наурыз, 18:00</p>
+        </div>
+
+        <div class="countdown-container" id="timer">
+            <div class="time-unit"><span class="time-num" id="days">0</span><span class="time-label">Күн</span></div>
+            <div class="time-unit"><span class="time-num" id="hours">0</span><span class="time-label">Сағат</span></div>
+            <div class="time-unit"><span class="time-num" id="mins">0</span><span class="time-label">Мин</span></div>
+            <div class="time-unit"><span class="time-num" id="secs">0</span><span class="time-label">Сек</span></div>
+        </div>
+
+        <a href="https://2gis.kz/almaty/geo/70000001095720040" target="_blank" class="btn-2gis">
+            <span>🗺️ 2GIS Картаны ашу</span>
+        </a>
+
+        <p class="signature">Терең құрметпен: 22-02 жігіттерінен! 🌹</p>
     </div>
 
     <script>
@@ -232,7 +276,7 @@
         const successScreen = document.getElementById('successScreen');
         const mainScreen = document.getElementById('mainScreen');
 
-        // Қашатын батырма логикасы
+        // Қашатын батырма
         function moveButton() {
             const padding = 50;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
@@ -240,44 +284,27 @@
             noBtn.style.position = 'fixed';
             noBtn.style.left = Math.random() * maxX + 'px';
             noBtn.style.top = Math.random() * maxY + 'px';
+            noBtn.style.zIndex = '1000';
         }
+
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
-        // Музыканы басқару
-        function stopMusic() {
-            bgMusic.pause();
-        }
-
-        function playMusic() {
-            if (successScreen.style.display === 'flex') {
-                bgMusic.play().catch(() => console.log("Музыка бұғатталды"));
-            }
-        }
-
-        document.addEventListener("visibilitychange", () => {
-            if (document.hidden) stopMusic();
-            else playMusic();
-        });
-
-        window.addEventListener("pagehide", stopMusic);
-        window.addEventListener("blur", stopMusic);
-        window.addEventListener("focus", playMusic);
-
         function showSuccess() {
-            mainScreen.style.display = 'none';
-            successScreen.style.display = 'flex';
-            
-            playMusic();
-            setInterval(createHeart, 300);
-            startSlides();
+            mainScreen.style.animation = 'cardAppear 0.5s reverse forwards';
+            setTimeout(() => {
+                mainScreen.style.display = 'none';
+                successScreen.style.display = 'flex';
+                bgMusic.play().catch(e => console.log("Music blocked"));
+                setInterval(createHeart, 400);
+                startSlides();
+                startTimer();
+            }, 500);
         }
 
         function startSlides() {
             let index = 0;
             const images = document.querySelectorAll('.slideshow-container img');
-            if(images.length === 0) return;
-            
             setInterval(() => {
                 images[index].classList.remove('active');
                 index = (index + 1) % images.length;
@@ -288,36 +315,28 @@
         function createHeart() {
             const h = document.createElement('div');
             h.className = 'heart';
-            h.innerHTML = ['🌷','🌸','🌹','❤️'][Math.floor(Math.random()*4)];
+            const emojis = ['🌷','🌸','🌹','❤️','✨'];
+            h.innerHTML = emojis[Math.floor(Math.random()*emojis.length)];
             h.style.left = Math.random() * 100 + 'vw';
-            h.style.animationDuration = (Math.random()*2+3)+'s';
+            h.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            h.style.animationDuration = (Math.random() * 2 + 3) + 's';
             document.body.appendChild(h);
             setTimeout(() => h.remove(), 4000);
         }
 
-        // КЕРІ САНАҚ ТАЙМЕРІ (9 наурыз 18:00)
-        const eventDate = new Date("March 9, 2026 18:00:00").getTime();
+        function startTimer() {
+            const target = new Date("March 9, 2026 18:00:00").getTime();
+            setInterval(() => {
+                const now = new Date().getTime();
+                const diff = target - now;
+                if (diff < 0) return;
 
-        const timerInterval = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = eventDate - now;
-
-            // Егер уақыт келіп қойса
-            if (distance < 0) {
-                clearInterval(timerInterval);
-                document.getElementById("countdown").innerHTML = "🎉 Кездесетін уақыт келді!";
-                return;
-            }
-
-            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById("countdown").innerHTML = 
-                `<span style="font-size: 0.9rem; color: #ff4d6d;">Кездесуге дейін қалды:</span><br> 
-                 <span style="font-size: 1.1rem; color: #c9184a;">${d} күн, ${h} сағат, ${m} минут, ${s} сек</span>`;
-        }, 1000);
+                document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+                document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                document.getElementById('mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                document.getElementById('secs').innerText = Math.floor((diff % (1000 * 60)) / 1000);
+            }, 1000);
+        }
     </script>
 </body>
 </html>
