@@ -62,7 +62,6 @@
             position: relative;
         }
 
-        /* ВОТ ЭТОТ БЛОК БЫЛ ПОТЕРЯН */
         .slideshow-container {
             position: relative;
             width: 100%;
@@ -215,6 +214,10 @@
                 <p>✨ <b>Көңіл-күй:</b> Көтеріңкі болсын!</p>
             </div>
 
+            <div id="countdown" style="margin-top: 15px; font-weight: bold; color: #c9184a; text-align: center; background: #fff0f3; padding: 12px; border-radius: 12px; border: 1px solid #ffb3c6;">
+                ⏳ Есептелуде...
+            </div>
+
             <a href="https://2gis.kz/almaty/geo/70000001095720040" target="_blank" class="btn-2gis">🗺️ 2GIS Картаны ашу</a>
         </div>
         
@@ -291,10 +294,30 @@
             document.body.appendChild(h);
             setTimeout(() => h.remove(), 4000);
         }
+
+        // КЕРІ САНАҚ ТАЙМЕРІ (9 наурыз 18:00)
+        const eventDate = new Date("March 9, 2026 18:00:00").getTime();
+
+        const timerInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+
+            // Егер уақыт келіп қойса
+            if (distance < 0) {
+                clearInterval(timerInterval);
+                document.getElementById("countdown").innerHTML = "🎉 Кездесетін уақыт келді!";
+                return;
+            }
+
+            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = 
+                `<span style="font-size: 0.9rem; color: #ff4d6d;">Кездесуге дейін қалды:</span><br> 
+                 <span style="font-size: 1.1rem; color: #c9184a;">${d} күн, ${h} сағат, ${m} минут, ${s} сек</span>`;
+        }, 1000);
     </script>
 </body>
 </html>
-
-
-
-
