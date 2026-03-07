@@ -250,24 +250,85 @@
             font-weight: 700;
         }
 
-        /* ПРИКОЛДЫҢ СТИЛІ (ШУТКА) */
-        .joke-box {
-            margin-top: 40px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.5);
+        /* ҚҰПИЯ БАТЫРМА СТИЛІ */
+        .secret-btn {
+            margin-top: 30px;
+            background: none;
+            border: 2px dashed var(--primary);
+            color: var(--primary);
+            padding: 12px 20px;
             border-radius: 15px;
-            font-size: 0.85rem;
-            color: #666;
-            font-style: italic;
-            border: 1px dashed #ffb3c6;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
         }
 
-        .joke-box.show {
+        .secret-btn:active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ПОП-АП (ВСПЛЫВАЮЩЕЕ ОКНО) СТИЛІ */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .modal-overlay.active {
             opacity: 1;
-            transform: translateY(0);
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px 25px;
+            border-radius: 25px;
+            width: 85%;
+            max-width: 340px;
+            text-align: center;
+            transform: scale(0.8) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-title {
+            color: var(--primary);
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .modal-text {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .close-modal-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1rem;
+            width: 100%;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -311,9 +372,9 @@
         </p>
 
         <div class="invite-details">
-            <p>📍 <b>Мекенжай:</b> Жамақаев көшесі, 144</p>
+            <p>📍 <b>Мекенжай:</b> Розыбакиева көшесі, 133</p>
             <p>📅 <b>Күні:</b> 9 наурыз, 17:30</p>
-            <p>✨ <b>Дрес-код:</b> Ең әдемі көйлектеріңіз пен жарқын күлкілеріңіз!</p>
+            <p>✨ <b>Дрес-код:</b> Ең әдемі көйлектеріңіз бен жарқын күлкілеріңіз!</p>
         </div>
 
         <div class="countdown-title">Кездесуге дейін қалды:</div>
@@ -330,12 +391,19 @@
 
         <p class="signature">Шексіз құрметпен: 22-02 жігіттерінен! 🌹</p>
 
-        <div class="joke-box" id="jokeBox">
-            P.S. Негізі бәріңізді Дубайға жібергіміз келген ғой... 🌴<br>
-            Бірақ ана жақтағы жағдайларға байланысты билеттеріңіз күйіп кетті 😅✈️<br>
-            Сондықтан осында бара саламыз! 🥂
-        </div>
+        <button id="openModalBtn" class="secret-btn">P.S. Маңызды хабарлама 💌</button>
+    </div>
 
+    <div class="modal-overlay" id="jokeModal">
+        <div class="modal-content">
+            <div class="modal-title">Айтпақшы... 🤫</div>
+            <div class="modal-text">
+                Негізі бәріңізді Дубайға жібергіміз келген ғой... 🌴<br><br>
+                Бірақ ана жақтағы жағдайларға байланысты билеттеріңіз күйіп кетті 😅✈️<br><br>
+                Сондықтан осында бара саламыз! 🥂
+            </div>
+            <button class="close-modal-btn" id="closeModalBtn">Түсінікті 😂</button>
+        </div>
     </div>
 
     <script>
@@ -360,10 +428,7 @@
 
         let isMusicPlaying = false;
 
-        function stopMusic() {
-            bgMusic.pause();
-        }
-
+        function stopMusic() { bgMusic.pause(); }
         function playMusic() {
             if (isMusicPlaying) {
                 bgMusic.play().catch(e => console.log("Браузер автоплейді бұғаттады"));
@@ -392,7 +457,6 @@
                 setInterval(createHeart, 350);
                 startSlides();
                 startTimer();
-                initJokeObserver(); // Приколдың анимациясын қосу
             }, 500);
         }
 
@@ -440,20 +504,25 @@
             }, 1000);
         }
 
-        // ШУТКАНЫ КӨРСЕТУГЕ АРНАЛҒАН СКРИПТ (Скролл жасағанда шығады)
-        function initJokeObserver() {
-            const jokeBox = document.getElementById('jokeBox');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if(entry.isIntersecting) {
-                        entry.target.classList.add('show');
-                        observer.unobserve(entry.target); // Бір рет қана шығу үшін
-                    }
-                });
-            }, { threshold: 0.5 }); // Блоктың 50% көрінгенде іске қосылады
+        // ВСПЛЫВАЮЩЕЕ ОКНО ЛОГИКАСЫ (Модалка)
+        const modal = document.getElementById('jokeModal');
+        const openBtn = document.getElementById('openModalBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
 
-            observer.observe(jokeBox);
-        }
+        openBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // Терезенің сыртын шертсе де жабылады
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
     </script>
 </body>
 </html>
