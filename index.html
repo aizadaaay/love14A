@@ -25,7 +25,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Жұмсақ, көктемгі градиент */
             background: linear-gradient(-45deg, #fff0f3, #ffe5ec, #fff0f3, #ffccd5);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
@@ -134,7 +133,6 @@
             border: 1px solid #e9ecef;
         }
 
-        /* Екінші экран */
         #successScreen {
             display: none;
             flex-direction: column;
@@ -251,6 +249,26 @@
             color: #c9184a;
             font-weight: 700;
         }
+
+        /* ПРИКОЛДЫҢ СТИЛІ (ШУТКА) */
+        .joke-box {
+            margin-top: 40px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #666;
+            font-style: italic;
+            border: 1px dashed #ffb3c6;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .joke-box.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -294,7 +312,7 @@
 
         <div class="invite-details">
             <p>📍 <b>Мекенжай:</b> Жамақаев көшесі, 144</p>
-            <p>📅 <b>Күні:</b> 9 наурыз, 18:00</p>
+            <p>📅 <b>Күні:</b> 9 наурыз, 17:30</p>
             <p>✨ <b>Дрес-код:</b> Ең әдемі көйлектеріңіз пен жарқын күлкілеріңіз!</p>
         </div>
 
@@ -306,11 +324,18 @@
             <div class="time-unit"><span class="time-num" id="secs">0</span><span class="time-label">Сек</span></div>
         </div>
 
-        <a href="https://2gis.kz/almaty/geo/70000001095720040" target="_blank" class="btn-2gis">
+        <a href="https://2gis.kz/almaty/geo/70000001090714821/76.891427,43.223310" target="_blank" class="btn-2gis">
             <span>🗺️ 2GIS Картаны ашу</span>
         </a>
 
         <p class="signature">Шексіз құрметпен: 22-02 жігіттерінен! 🌹</p>
+
+        <div class="joke-box" id="jokeBox">
+            P.S. Негізі бәріңізді Дубайға жібергіміз келген ғой... 🌴<br>
+            Бірақ ана жақтағы жағдайларға байланысты билеттеріңіз күйіп кетті 😅✈️<br>
+            Сондықтан осында бара саламыз! 🥂
+        </div>
+
     </div>
 
     <script>
@@ -333,7 +358,6 @@
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
-        // === МУЗЫКАНЫ БАСҚАРУ БЛОГЫ (Толық жөнделген) ===
         let isMusicPlaying = false;
 
         function stopMusic() {
@@ -341,26 +365,19 @@
         }
 
         function playMusic() {
-            // Екінші экран қосулы болса ғана ойнайды
             if (isMusicPlaying) {
                 bgMusic.play().catch(e => console.log("Браузер автоплейді бұғаттады"));
             }
         }
 
-        // Вкладка ауысқанда немесе браузерді жинағанда
         document.addEventListener("visibilitychange", () => {
-            if (document.hidden) {
-                stopMusic();
-            } else {
-                playMusic();
-            }
+            if (document.hidden) stopMusic();
+            else playMusic();
         });
 
-        // Басқа бетке өткенде немесе терезе фокусын жоғалтқанда (мысалы 2gis ашқанда)
         window.addEventListener("blur", stopMusic);
         window.addEventListener("focus", playMusic);
         window.addEventListener("pagehide", stopMusic);
-        // ===============================================
 
         function showSuccess() {
             mainScreen.style.animation = 'cardAppear 0.5s reverse forwards';
@@ -369,13 +386,13 @@
                 mainScreen.style.display = 'none';
                 successScreen.style.display = 'flex';
                 
-                // Музыканы қосу
                 isMusicPlaying = true;
                 playMusic();
                 
                 setInterval(createHeart, 350);
                 startSlides();
                 startTimer();
+                initJokeObserver(); // Приколдың анимациясын қосу
             }, 500);
         }
 
@@ -404,7 +421,7 @@
         }
 
         function startTimer() {
-            const target = new Date("March 9, 2026 18:00:00").getTime();
+            const target = new Date("March 9, 2026 17:30:00").getTime();
             
             setInterval(() => {
                 const now = new Date().getTime();
@@ -422,7 +439,21 @@
                 document.getElementById('secs').innerText = Math.floor((diff % (1000 * 60)) / 1000);
             }, 1000);
         }
+
+        // ШУТКАНЫ КӨРСЕТУГЕ АРНАЛҒАН СКРИПТ (Скролл жасағанда шығады)
+        function initJokeObserver() {
+            const jokeBox = document.getElementById('jokeBox');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        entry.target.classList.add('show');
+                        observer.unobserve(entry.target); // Бір рет қана шығу үшін
+                    }
+                });
+            }, { threshold: 0.5 }); // Блоктың 50% көрінгенде іске қосылады
+
+            observer.observe(jokeBox);
+        }
     </script>
 </body>
 </html>
-
